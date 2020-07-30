@@ -1,4 +1,4 @@
-package com.flowable.flowable;
+package com.flowable.core;
 
 import org.flowable.engine.RepositoryService;
 import org.flowable.engine.repository.Deployment;

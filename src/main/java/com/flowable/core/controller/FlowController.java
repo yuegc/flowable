@@ -1,10 +1,8 @@
-package com.flowable.flowable.controller;
+package com.flowable.core.controller;
 
 import org.flowable.engine.*;
 import org.flowable.engine.repository.ProcessDefinition;
-import org.flowable.engine.runtime.Execution;
 import org.flowable.engine.runtime.ProcessInstance;
-import org.flowable.image.ProcessDiagramGenerator;
 import org.flowable.task.api.Task;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,15 +10,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 /**
  * @author: yuegc

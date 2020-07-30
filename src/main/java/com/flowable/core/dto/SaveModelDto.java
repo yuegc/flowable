@@ -1,4 +1,4 @@
-package com.flowable.flowable.dto;
+package com.flowable.core.dto;
 
 import lombok.Data;
 

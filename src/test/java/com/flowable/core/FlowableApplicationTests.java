@@ -1,7 +1,7 @@
-package com.flowable.flowable;
+package com.flowable.core;
 
-import com.flowable.flowable.dto.SaveModelDto;
-import com.flowable.flowable.service.FlowModelService;
+import com.flowable.core.dto.SaveModelDto;
+import com.flowable.core.service.FlowModelService;
 import org.flowable.common.engine.api.repository.EngineResource;
 import org.flowable.engine.*;
 import org.flowable.engine.impl.persistence.entity.HistoricProcessInstanceEntity;

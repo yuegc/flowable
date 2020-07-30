@@ -1,10 +1,10 @@
-package com.flowable.flowable.service.impl;
+package com.flowable.core.service.impl;
 
 import cn.hutool.core.util.StrUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.flowable.flowable.dto.SaveModelDto;
-import com.flowable.flowable.service.FlowModelService;
+import com.flowable.core.dto.SaveModelDto;
+import com.flowable.core.service.FlowModelService;
 import org.flowable.bpmn.converter.BpmnXMLConverter;
 import org.flowable.bpmn.model.BpmnModel;
 import org.flowable.common.engine.impl.util.io.InputStreamSource;

@@ -1,7 +1,10 @@
-package com.flowable.flowable.service;
+package com.flowable.core.service;
 
-import com.flowable.flowable.dto.SaveFormDto;
+import com.flowable.core.dto.SaveFormDto;
+import com.flowable.core.entity.FormModel;
 import org.flowable.form.api.FormDeployment;
+
+import java.util.List;
 
 /**
  * @author: yuegc
@@ -12,4 +15,6 @@ public interface FlowFormService {
     void saveForm(SaveFormDto saveFormDto);
 
     FormDeployment deployForm(String formId);
+
+    List<FormModel> formModelList();
 }

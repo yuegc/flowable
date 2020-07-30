@@ -1,6 +1,6 @@
-package com.flowable.flowable.service;
+package com.flowable.core.service;
 
-import com.flowable.flowable.dto.SaveModelDto;
+import com.flowable.core.dto.SaveModelDto;
 import org.flowable.engine.repository.Deployment;
 import org.flowable.engine.repository.Model;
 

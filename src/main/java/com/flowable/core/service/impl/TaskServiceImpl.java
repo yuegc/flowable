@@ -1,6 +1,6 @@
-package com.flowable.flowable.service.impl;
+package com.flowable.core.service.impl;
 
-import com.flowable.flowable.service.TaskService;
+import com.flowable.core.service.TaskService;
 
 /**
  * @author: yuegc

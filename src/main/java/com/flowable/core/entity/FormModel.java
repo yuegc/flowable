@@ -1,4 +1,4 @@
-package com.flowable.flowable.entity;
+package com.flowable.core.entity;
 
 import java.io.Serializable;
 import java.sql.Timestamp;

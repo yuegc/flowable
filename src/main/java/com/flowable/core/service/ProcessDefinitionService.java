@@ -1,4 +1,4 @@
-package com.flowable.flowable.service;
+package com.flowable.core.service;
 
 /**
  * @author: yuegc
