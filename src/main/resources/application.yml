@@ -1,0 +1,21 @@
+server:
+  port: 8080
+spring:
+  application:
+    name: flowable
+  datasource:
+    url: jdbc:mysql://192.168.13.170:3306/flowable?useSSL=false&useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai&allowMultiQueries=true&nullCatalogMeansCurrent=true
+    username: root
+    password: Root!@#
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    database: mysql
+    show-sql: true
+    hibernate:
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+flowable:
+  #关闭定时任务JOB
+  async-executor-activate: false
+  #将databaseSchemaUpdate设置为true。当Flowable发现库与数据库表结构不一致时，会自动将数据库表结构升级至新版本。
+  database-schema-update: false
