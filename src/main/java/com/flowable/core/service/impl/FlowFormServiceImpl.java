@@ -64,9 +64,8 @@ public class FlowFormServiceImpl implements FlowFormService {
     }
 
     @Override
-    public List<FormModel> formModelList() {
+    public Page<FormModel> formModelList() {
         Pageable pageable = PageRequest.of(1, 10, Sort.Direction.DESC, "createTime");
-        Page<FormModel> formModels = formModelDao.findAll(pageable);
-        return formModelDao.findAll(pageable).toList();
+        return formModelDao.findAll(pageable);
     }
 }

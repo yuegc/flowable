@@ -3,6 +3,7 @@ package com.flowable.core.service;
 import com.flowable.core.dto.SaveFormDto;
 import com.flowable.core.entity.FormModel;
 import org.flowable.form.api.FormDeployment;
+import org.springframework.data.domain.Page;
 
 import java.util.List;
 
@@ -16,5 +17,7 @@ public interface FlowFormService {
 
     FormDeployment deployForm(String formId);
 
-    List<FormModel> formModelList();
+    Page<FormModel> formModelList();
+
+
 }
