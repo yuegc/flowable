@@ -4,6 +4,9 @@ import com.flowable.core.dto.SaveModelDto;
 import com.flowable.core.service.FlowModelService;
 import org.flowable.common.engine.api.repository.EngineResource;
 import org.flowable.engine.*;
+import org.flowable.engine.form.FormProperty;
+import org.flowable.engine.form.StartFormData;
+import org.flowable.engine.form.TaskFormData;
 import org.flowable.engine.impl.persistence.entity.HistoricProcessInstanceEntity;
 import org.flowable.engine.repository.Deployment;
 import org.flowable.engine.repository.Model;
@@ -104,17 +107,7 @@ class FlowableApplicationTests {
 						.singleResult();
 		String processInstanceId = historicProcessInstanceEntity.getProcessInstanceId();
 
-		/*StartFormData startFormData = formService.getStartFormData(processDefinitionId);
-		List<FormProperty> formProperties5 = startFormData.getFormProperties();
-		formProperties5.forEach(formProperty -> {
-			System.out.println("****######################");
-			System.out.println(formProperty.getId());
-			System.out.println(formProperty.getValue());
-			System.out.println(formProperty.getName());
-			System.out.println(formProperty.getType());
-			System.out.println(formProperty.getValue());
-			System.out.println("****######################");
-		});*/
+
 		//查询表单信息
 		FormInfo fi = runtimeService.getStartFormModel(processDefinitionId, processInstanceId);
 		SimpleFormModel fm = (SimpleFormModel) fi.getFormModel();
@@ -171,6 +164,36 @@ class FlowableApplicationTests {
 			System.out.println(field.getValue());
 			System.out.println(field.getPlaceholder());
 			System.out.println("######################");
+		});
+	}
+
+	@Test
+	void taskForm() {
+		//获取个人任务表单
+		TaskFormData form = formService.getTaskFormData("6534a85d-c806-11ea-a820-acde48001122");
+		List<FormProperty> formProperties1 = form.getFormProperties();
+		formProperties1.forEach(formProperty -> {
+			System.out.println("######################");
+			System.out.println(formProperty.getId());
+			System.out.println(formProperty.getName());
+			System.out.println(formProperty.getType());
+			System.out.println(formProperty.getValue());
+			System.out.println("######################");
+		});
+	}
+
+	@Test
+	void startForm() {
+		StartFormData startFormData = formService.getStartFormData("holidayRequest:6:0aee1af3-c810-11ea-85e9-acde48001122");
+		List<FormProperty> formProperties5 = startFormData.getFormProperties();
+		formProperties5.forEach(formProperty -> {
+			System.out.println("****######################");
+			System.out.println(formProperty.getId());
+			System.out.println(formProperty.getValue());
+			System.out.println(formProperty.getName());
+			System.out.println(formProperty.getType());
+			System.out.println(formProperty.getValue());
+			System.out.println("****######################");
 		});
 	}
 
