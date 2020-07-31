@@ -67,12 +67,6 @@ class FlowableApplicationTests {
 	}
 
 	@Test
-	void modelList(){
-		List<Model> models = flowModelService.modelList();
-		models.forEach(model -> System.out.println(model.getName()));
-	}
-
-	@Test
 	void deploy() {
 		Deployment deployment = repositoryService.createDeployment()
 				.name("表单流程")
