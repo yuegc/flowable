@@ -2,8 +2,10 @@ package com.flowable.core;
 
 import com.flowable.core.dto.SaveModelDto;
 import com.flowable.core.service.FlowModelService;
+import liquibase.pro.packaged.A;
 import org.flowable.common.engine.api.repository.EngineResource;
 import org.flowable.engine.*;
+import org.flowable.engine.FormService;
 import org.flowable.engine.form.FormProperty;
 import org.flowable.engine.form.StartFormData;
 import org.flowable.engine.form.TaskFormData;
@@ -11,10 +13,8 @@ import org.flowable.engine.impl.persistence.entity.HistoricProcessInstanceEntity
 import org.flowable.engine.repository.Deployment;
 import org.flowable.engine.repository.Model;
 import org.flowable.engine.repository.ProcessDefinition;
-import org.flowable.form.api.FormDefinition;
-import org.flowable.form.api.FormDeployment;
-import org.flowable.form.api.FormInfo;
-import org.flowable.form.api.FormRepositoryService;
+import org.flowable.engine.runtime.ProcessInstance;
+import org.flowable.form.api.*;
 import org.flowable.form.model.FormField;
 import org.flowable.form.model.SimpleFormModel;
 import org.flowable.task.api.Task;
@@ -43,6 +43,8 @@ class FlowableApplicationTests {
 	private FormRepositoryService formRepositoryService;
 	@Autowired
 	private FormService formService;
+	@Autowired
+	private org.flowable.form.api.FormService formServices;
 	@Autowired
 	private FlowModelService flowModelService;
 
@@ -84,45 +86,38 @@ class FlowableApplicationTests {
 				.latestVersion()
 				.singleResult();
 		String processDefinitionId = processDefinition.getId();
+		System.out.println(processDefinitionId);
 
 		FormDeployment formDeployment = formRepositoryService.createDeployment()
-				.name("test")
-				.addString("flowable/test.form", formJson)
-				//.parentDeploymentId(deployment.getId())
+				.name("form1")
+				.addString("flowable/form1.form", formJson)
+				.parentDeploymentId(deployment.getId())
 				.deploy();
 		FormDefinition formDefinition = formRepositoryService.createFormDefinitionQuery().deploymentId(formDeployment.getId()).singleResult();
 		String formDefinitionId = formDefinition.getId();
 
 		//启动实例并且设置表单的值
 		String outcome = "测试";
-		Map<String, Object> formProperties;
+		Map<String, String> formProperties;
 		formProperties = new HashMap<>();
 		formProperties.put("startUser", "ygc");
 		formProperties.put("days", "3");
 		String processInstanceName = "shareniu";
-		runtimeService.startProcessInstanceWithForm(processDefinitionId, outcome, formProperties, processInstanceName);
-		HistoricProcessInstanceEntity historicProcessInstanceEntity = (HistoricProcessInstanceEntity )
-				historyService.createHistoricProcessInstanceQuery()
-						.processDefinitionId(processDefinitionId)
-						.singleResult();
-		String processInstanceId = historicProcessInstanceEntity.getProcessInstanceId();
+		ProcessInstance processInstance = formService.submitStartFormData(processDefinitionId, formProperties);
+
+		String processInstanceId = processInstance.getProcessInstanceId();
 
 
 		//查询表单信息
-		FormInfo fi = runtimeService.getStartFormModel(processDefinitionId, processInstanceId);
-		SimpleFormModel fm = (SimpleFormModel) fi.getFormModel();
+		StartFormData startFormData = formService.getStartFormData(processDefinitionId);
+		List<FormProperty> formProperties1 = startFormData.getFormProperties();
 		//System.out.println(fm.getId());
-		System.out.println(fm.getKey());
-		System.out.println(fm.getName());
-		System.out.println(fm.getOutcomeVariableName());
-		System.err.println(fm.getVersion());
-		List<FormField> fields = fm.getFields();
-		for (FormField ff : fields) {
+		System.out.println(startFormData.getFormKey());
+		for (FormProperty ff : formProperties1) {
 			System.out.println("######################");
 			System.out.println(ff.getId());
 			System.out.println(ff.getName());
 			System.out.println(ff.getType());
-			System.out.println(ff.getPlaceholder());
 			System.out.println(ff.getValue());
 			System.out.println("######################");
 
@@ -130,30 +125,30 @@ class FlowableApplicationTests {
 
 
 		//查询个人任务并填写表单
-		Map<String, Object> formProperties2 = new HashMap<>();
+		Map<String, String> formProperties2 = new HashMap<>();
 		formProperties2.put("startUser", "ygc");
 		formProperties2.put("days", "3");
 		Task task = taskService.createTaskQuery().processInstanceId(processInstanceId).singleResult();
 		String taskId = task.getId();
 		String outcome2="测试";
-		taskService.completeTaskWithForm(taskId, formDefinitionId, outcome2, formProperties2);
+		formService.submitTaskFormData(taskId, formProperties2);
 
 		//获取个人任务表单
-//		TaskFormData form = formService.getTaskFormData(taskId);
-//		List<FormProperty> formProperties1 = form.getFormProperties();
-//		formProperties1.forEach(formProperty -> {
-//			System.out.println("######################");
-//			System.out.println(formProperty.getId());
-//			System.out.println(formProperty.getName());
-//			System.out.println(formProperty.getType());
-//			System.out.println(formProperty.getValue());
-//			System.out.println("######################");
-//		});
+		TaskFormData form = formService.getTaskFormData(taskId);
+		List<FormProperty> formProperties3 = form.getFormProperties();
+		formProperties3.forEach(formProperty -> {
+			System.out.println("######################");
+			System.out.println(formProperty.getId());
+			System.out.println(formProperty.getName());
+			System.out.println(formProperty.getType());
+			System.out.println(formProperty.getValue());
+			System.out.println("######################");
+		});
 	}
 
 	@Test
 	void task() {
-		FormInfo taskFM = taskService.getTaskFormModel("6534a85d-c806-11ea-a820-acde48001122");
+		FormInfo taskFM = taskService.getTaskFormModel("13c4bff1-d551-11ea-9725-acde48001122");
 		SimpleFormModel taskFMFormModel = (SimpleFormModel) taskFM.getFormModel();
 		List<FormField> fields = taskFMFormModel.getFields();
 		fields.forEach(field -> {
@@ -170,7 +165,7 @@ class FlowableApplicationTests {
 	@Test
 	void taskForm() {
 		//获取个人任务表单
-		TaskFormData form = formService.getTaskFormData("6534a85d-c806-11ea-a820-acde48001122");
+		TaskFormData form = formService.getTaskFormData("13c4bff1-d551-11ea-9725-acde48001122");
 		List<FormProperty> formProperties1 = form.getFormProperties();
 		formProperties1.forEach(formProperty -> {
 			System.out.println("######################");
@@ -184,9 +179,11 @@ class FlowableApplicationTests {
 
 	@Test
 	void startForm() {
-		StartFormData startFormData = formService.getStartFormData("holidayRequest:6:0aee1af3-c810-11ea-85e9-acde48001122");
-		List<FormProperty> formProperties5 = startFormData.getFormProperties();
-		formProperties5.forEach(formProperty -> {
+		StartFormData startFormData = formService.getStartFormData("holidayRequest:11:13880604-d551-11ea-9725-acde48001122");
+		FormInfo formModelByKey = formRepositoryService.getFormModelByKey(startFormData.getFormKey());
+		SimpleFormModel formModel = (SimpleFormModel) formModelByKey.getFormModel();
+		List<FormField> fields = formModel.getFields();
+		fields.forEach(formProperty -> {
 			System.out.println("****######################");
 			System.out.println(formProperty.getId());
 			System.out.println(formProperty.getValue());
