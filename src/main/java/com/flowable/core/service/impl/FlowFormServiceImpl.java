@@ -7,9 +7,14 @@ import com.flowable.core.dto.SaveFormDto;
 import com.flowable.core.entity.FormModel;
 import com.flowable.core.repository.FormModelDao;
 import com.flowable.core.service.FlowFormService;
+import org.flowable.engine.FormService;
+import org.flowable.engine.form.FormProperty;
+import org.flowable.engine.form.TaskFormData;
 import org.flowable.form.api.FormDeployment;
+import org.flowable.form.api.FormInfo;
 import org.flowable.form.api.FormRepositoryService;
-import org.flowable.form.api.FormService;
+import org.flowable.form.model.FormField;
+import org.flowable.form.model.SimpleFormModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -30,8 +35,6 @@ public class FlowFormServiceImpl implements FlowFormService {
     private FormRepositoryService formRepositoryService;
     @Autowired
     private FormService formService;
-    @Autowired
-    private org.flowable.engine.FormService formServices;
     @Autowired
     private FormModelDao formModelDao;
 
@@ -67,5 +70,19 @@ public class FlowFormServiceImpl implements FlowFormService {
     public Page<FormModel> formModelList() {
         Pageable pageable = PageRequest.of(1, 10, Sort.Direction.DESC, "createTime");
         return formModelDao.findAll(pageable);
+    }
+
+    @Override
+    public List<FormField> getStartForm(String processDefinitionId) {
+        String startFormKey = formService.getStartFormKey(processDefinitionId);
+        FormInfo formInfo = formRepositoryService.getFormModelByKey(startFormKey);
+        SimpleFormModel simpleFormModel = (SimpleFormModel) formInfo.getFormModel();
+        return simpleFormModel.getFields();
+    }
+
+    @Override
+    public List<FormProperty> getTaskForm(String taskId) {
+        TaskFormData taskFormData = formService.getTaskFormData(taskId);
+        return taskFormData.getFormProperties();
     }
 }

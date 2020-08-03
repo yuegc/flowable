@@ -2,7 +2,9 @@ package com.flowable.core.service;
 
 import com.flowable.core.dto.SaveFormDto;
 import com.flowable.core.entity.FormModel;
+import org.flowable.engine.form.FormProperty;
 import org.flowable.form.api.FormDeployment;
+import org.flowable.form.model.FormField;
 import org.springframework.data.domain.Page;
 
 import java.util.List;
@@ -19,5 +21,7 @@ public interface FlowFormService {
 
     Page<FormModel> formModelList();
 
+    List<FormField> getStartForm(String processDefinitionId);
 
+    List<FormProperty> getTaskForm(String taskId);
 }
