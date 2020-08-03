@@ -1,10 +1,12 @@
 package com.flowable.core.service;
 
 /**
- * @author: yuegc
- * @description:
- * @create: 2020/01/19 17:44
- */
+ * @Description:  
+ * @Param: 
+ * @return: 
+ * @Author: yuegc
+ * @Date: 2020/8/3 15:00:02
+ */ 
 public interface ProcessInstanceService {
     void processInstanceList();
 
