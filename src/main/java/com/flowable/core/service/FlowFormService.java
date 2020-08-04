@@ -17,9 +17,9 @@ import java.util.List;
 public interface FlowFormService {
     void saveForm(SaveFormDto saveFormDto);
 
-    FormDeployment deployForm(String formId);
+    FormDeployment deploy(String formId);
 
-    Page<FormModel> formModelList();
+    Page<FormModel> formList();
 
     List<FormField> getStartForm(String processDefinitionId);
 

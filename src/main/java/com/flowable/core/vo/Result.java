@@ -24,15 +24,15 @@ public class Result<T> implements Serializable {
 
     private T data;
 
-    private static <T> Result<T> success() {
+    public static <T> Result<T> success() {
         return new Result<>();
     }
 
-    private static <T> Result<T> success(T data) {
+    public static <T> Result<T> success(T data) {
         return new Result<>(ResponseCodeEnum.SUCCESS.getCode(), ResponseCodeEnum.SUCCESS.getMsg(), data);
     }
 
-    private static <T> Result<T> fail(ResponseCodeEnum responseCodeEnum) {
+    public static <T> Result<T> fail(ResponseCodeEnum responseCodeEnum) {
         return new Result<>(responseCodeEnum.getCode(), responseCodeEnum.getMsg(), null);
     }
 }

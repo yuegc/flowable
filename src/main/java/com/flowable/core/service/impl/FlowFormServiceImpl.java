@@ -52,7 +52,7 @@ public class FlowFormServiceImpl implements FlowFormService {
     }
 
     @Override
-    public FormDeployment deployForm(String formId) {
+    public FormDeployment deploy(String formId) {
         FormModel formModel = formModelDao.getFormModelById(formId);
         if (formModel == null) {
             //表单数据为空，请先设计表单并成功保存，再进行发布
@@ -67,7 +67,7 @@ public class FlowFormServiceImpl implements FlowFormService {
     }
 
     @Override
-    public Page<FormModel> formModelList() {
+    public Page<FormModel> formList() {
         Pageable pageable = PageRequest.of(1, 10, Sort.Direction.DESC, "createTime");
         return formModelDao.findAll(pageable);
     }

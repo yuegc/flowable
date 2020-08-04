@@ -16,9 +16,9 @@ public interface FlowModelService {
 
     /**
      * 新增流程模型
-     * @param model
+     * @param saveModelDto
      */
-    Model saveModel(SaveModelDto model) throws UnsupportedEncodingException;
+    Model saveModel(SaveModelDto saveModelDto);
 
     /**
      * 发布流程
