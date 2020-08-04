@@ -12,6 +12,7 @@ import org.springframework.context.annotation.Configuration;
  */
 @Configuration
 public class FlowableConfig implements EngineConfigurationConfigurer<SpringProcessEngineConfiguration> {
+
     @Override
     public void configure(SpringProcessEngineConfiguration engineConfiguration) {
         //防止流程图中文乱码
