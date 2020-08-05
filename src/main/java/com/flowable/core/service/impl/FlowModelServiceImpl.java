@@ -76,6 +76,7 @@ public class FlowModelServiceImpl implements FlowModelService {
         return model;
     }
 
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public Deployment deploy(String modelId) {
         Model model = repositoryService.getModel(modelId);

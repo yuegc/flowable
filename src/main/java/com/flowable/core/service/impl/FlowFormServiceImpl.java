@@ -21,6 +21,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -38,6 +39,7 @@ public class FlowFormServiceImpl implements FlowFormService {
     @Autowired
     private FormModelDao formModelDao;
 
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public void saveForm(SaveFormDto saveFormDto) {
         FormModel formModel;
@@ -51,6 +53,7 @@ public class FlowFormServiceImpl implements FlowFormService {
         formModelDao.save(formModel);
     }
 
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public FormDeployment deploy(String formId) {
         FormModel formModel = formModelDao.getFormModelById(formId);
