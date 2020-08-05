@@ -8,13 +8,15 @@ package com.flowable.core.service;
  * @Date: 2020/8/3 15:00:02
  */ 
 public interface ProcessInstanceService {
-    void processInstanceList();
+    void instanceList();
 
-    void startProcessInstance();
+    void startInstance();
 
-    void stopProcessInstance();
+    void stopInstance();
 
-    void deleteProcessInstance();
+    void deleteInstance();
 
-    void suspendProcessInstance();
+    void suspendInstance();
+
+    void activeInstance();
 }
