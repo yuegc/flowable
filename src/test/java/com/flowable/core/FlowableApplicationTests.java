@@ -55,12 +55,8 @@ class FlowableApplicationTests {
 		saveModelDTO.setName("测试BPMN模型");
 		saveModelDTO.setKey("test_bpmn");
 		saveModelDTO.setModelXml(bpmxml);
-		try {
-			Model model = flowModelService.saveModel(saveModelDTO);
-			System.out.println(model.getId());
-		} catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
-		}
+		Model model = flowModelService.saveModel(saveModelDTO);
+		System.out.println(model.getId());
 	}
 
 	@Test

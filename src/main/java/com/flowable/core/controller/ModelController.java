@@ -4,6 +4,7 @@ import com.flowable.core.dto.SaveModelDto;
 import com.flowable.core.service.FlowModelService;
 import com.flowable.core.vo.Result;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import org.flowable.engine.repository.Model;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +17,7 @@ import java.util.List;
  * @description:
  * @create: 2020/07/15 09:53
  */
-@Api("流程模型管理")
+@Api(tags = "流程模型管理")
 @RestController
 @RequestMapping("/model")
 public class ModelController {
@@ -31,6 +32,7 @@ public class ModelController {
     }
 
     @ApiOperation(value = "发布流程")
+    @ApiImplicitParam(name = "modelId", value = "流程模型id", required = true)
     @GetMapping("/deploy")
     public Result<Object> deploy(@RequestParam String modelId) {
         modelService.deploy(modelId);

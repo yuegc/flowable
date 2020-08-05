@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
  * @description:
  * @create: 2020/07/15 09:53
  */
-@Api("表单管理")
+@Api(tags = "表单管理")
 @RestController
 @RequestMapping("/form")
 public class FormController {
