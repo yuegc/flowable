@@ -12,8 +12,6 @@ public interface ProcessInstanceService {
 
     void startInstance();
 
-    void stopInstance();
-
     void deleteInstance();
 
     void suspendInstance();
