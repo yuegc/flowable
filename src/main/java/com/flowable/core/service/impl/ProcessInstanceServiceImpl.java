@@ -4,6 +4,8 @@ import com.flowable.core.service.ProcessInstanceService;
 import org.flowable.engine.HistoryService;
 import org.flowable.engine.RepositoryService;
 import org.flowable.engine.RuntimeService;
+import org.flowable.engine.history.HistoricProcessInstance;
+import org.flowable.engine.runtime.ProcessInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,7 +25,7 @@ public class ProcessInstanceServiceImpl implements ProcessInstanceService {
 
     @Override
     public void instanceList() {
-        historyService.createHistoricProcessInstanceQuery().list();
+        runtimeService.createProcessInstanceQuery().list();
     }
 
     @Override
@@ -44,5 +46,14 @@ public class ProcessInstanceServiceImpl implements ProcessInstanceService {
     @Override
     public void activeInstance() {
         runtimeService.activateProcessInstanceById(null);
+    }
+
+
+    private ProcessInstance getProcessInstanceById(String processInstanceId) {
+        return runtimeService.createProcessInstanceQuery().processInstanceId(processInstanceId).singleResult();
+    }
+
+    private HistoricProcessInstance getHistoricProcessInstanceById(String processInstanceId) {
+        return historyService.createHistoricProcessInstanceQuery().processInstanceId(processInstanceId).singleResult();
     }
 }
