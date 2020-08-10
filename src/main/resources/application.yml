@@ -8,13 +8,13 @@ spring:
     username: root
     password: Root!@#
     driver-class-name: com.mysql.cj.jdbc.Driver
-  jpa:
-    database: mysql
-    show-sql: true
-    hibernate:
-      ddl-auto: update
-      naming:
-        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+#  jpa:
+#    database: mysql
+#    show-sql: true
+#    hibernate:
+#      ddl-auto: update
+#      naming:
+#        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
 flowable:
   #关闭定时任务JOB
   async-executor-activate: false
@@ -24,3 +24,10 @@ pagehelper:
   helperDialect: mysql
   reasonable: true
   supportMethodsArguments: false
+
+mybatis:
+  mapper-locations: classpath:mapper/*.xml,classpath:/META-INF/modeler-mybatis-mappings/*.xml
+  configuration-properties:
+    prefix:
+    blobType: BLOB
+    boolValue: TRUE
