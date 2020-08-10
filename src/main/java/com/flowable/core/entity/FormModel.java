@@ -1,3 +1,4 @@
+/*
 package com.flowable.core.entity;
 
 import java.io.Serializable;
@@ -51,4 +52,4 @@ public class FormModel implements Serializable {
 
     @Column(name = "TENANT_ID_")
     private String tenantId;
-}
+}*/

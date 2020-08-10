@@ -1,3 +1,4 @@
+/*
 package com.flowable.core.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
@@ -25,11 +26,13 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+*/
 /**
  * @author: yuegc
  * @description:
  * @create: 2020/07/15 09:56
- */
+ *//*
+
 @Service
 public class FlowFormServiceImpl implements FlowFormService {
     @Autowired
@@ -89,3 +92,4 @@ public class FlowFormServiceImpl implements FlowFormService {
         return taskFormData.getFormProperties();
     }
 }
+*/

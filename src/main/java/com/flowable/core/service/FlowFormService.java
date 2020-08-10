@@ -1,3 +1,4 @@
+/*
 package com.flowable.core.service;
 
 import com.flowable.core.dto.SaveFormDto;
@@ -9,11 +10,13 @@ import org.springframework.data.domain.Page;
 
 import java.util.List;
 
+*/
 /**
  * @author: yuegc
  * @description:
  * @create: 2020/07/15 09:55
- */
+ *//*
+
 public interface FlowFormService {
     void saveForm(SaveFormDto saveFormDto);
 
@@ -25,3 +28,4 @@ public interface FlowFormService {
 
     List<FormProperty> getTaskForm(String taskId);
 }
+*/
