@@ -6,7 +6,8 @@ import com.flowable.core.vo.Result;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
-import org.flowable.engine.repository.Model;
+import org.flowable.ui.modeler.domain.AbstractModel;
+import org.flowable.ui.modeler.domain.Model;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -42,7 +43,7 @@ public class ModelController {
     @ApiOperation(value = "流程模型列表")
     @GetMapping("/model_list")
     public Result<Object> modelList() {
-        List<Model> models = modelService.modelList();
+        List<AbstractModel> models = modelService.modelList();
         return Result.success(models);
     }
 }

@@ -2,9 +2,9 @@ package com.flowable.core.service;
 
 import com.flowable.core.dto.SaveModelDto;
 import org.flowable.engine.repository.Deployment;
-import org.flowable.engine.repository.Model;
+import org.flowable.ui.modeler.domain.AbstractModel;
+import org.flowable.ui.modeler.domain.Model;
 
-import java.io.UnsupportedEncodingException;
 import java.util.List;
 
 /**
@@ -30,5 +30,5 @@ public interface FlowModelService {
      * 流程模型列表
      * @return
      */
-    List<Model> modelList();
+    List<AbstractModel> modelList();
 }

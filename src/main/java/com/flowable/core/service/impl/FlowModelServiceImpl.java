@@ -1,24 +1,38 @@
 package com.flowable.core.service.impl;
 
-import cn.hutool.core.util.StrUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.flowable.core.dto.SaveModelDto;
 import com.flowable.core.service.FlowModelService;
+import org.apache.commons.lang3.StringUtils;
+import org.flowable.bpmn.BpmnAutoLayout;
 import org.flowable.bpmn.converter.BpmnXMLConverter;
 import org.flowable.bpmn.model.BpmnModel;
+import org.flowable.bpmn.model.Process;
 import org.flowable.common.engine.impl.util.io.InputStreamSource;
+import org.flowable.editor.language.json.converter.BpmnJsonConverter;
+import org.flowable.editor.language.json.converter.util.CollectionUtils;
 import org.flowable.engine.RepositoryService;
 import org.flowable.engine.repository.Deployment;
-import org.flowable.engine.repository.Model;
-import org.flowable.image.impl.DefaultProcessDiagramGenerator;
+import org.flowable.idm.api.User;
+import org.flowable.ui.common.security.SecurityUtils;
+import org.flowable.ui.common.service.exception.BadRequestException;
+import org.flowable.ui.common.util.XmlUtil;
+import org.flowable.ui.modeler.domain.AbstractModel;
+import org.flowable.ui.modeler.domain.Model;
+import org.flowable.ui.modeler.repository.ModelRepository;
+import org.flowable.ui.modeler.serviceapi.ModelService;
+import org.flowable.validation.ProcessValidator;
+import org.flowable.validation.ProcessValidatorFactory;
+import org.flowable.validation.ValidationError;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLStreamReader;
 import java.io.*;
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 /**
@@ -30,56 +44,82 @@ import java.util.List;
 public class FlowModelServiceImpl implements FlowModelService {
     @Autowired
     private RepositoryService repositoryService;
+    @Autowired
+    private ModelRepository modelRepository;
+    @Autowired
+    private ModelService modelService;
+    @Autowired
+    private ObjectMapper objectMapper;
+
+    private BpmnXMLConverter bpmnXmlConverter = new BpmnXMLConverter();
+    private BpmnJsonConverter bpmnJsonConverter = new BpmnJsonConverter();
 
     @Transactional(rollbackFor = Exception.class)
     @Override
     public Model saveModel(SaveModelDto saveModelDTO) {
-        Model model;
-        if (StrUtil.isEmpty(saveModelDTO.getId())) {
-            model = repositoryService.newModel();
-        } else {
-            model = repositoryService.getModel(saveModelDTO.getId());
-        }
-        model.setName(saveModelDTO.getName());
-        model.setKey(saveModelDTO.getKey());
-        model.setCategory(saveModelDTO.getCategory());
-        //创建model需要的metaInfo属性数据
-        ObjectNode metaInfo = new ObjectMapper().createObjectNode();
-        metaInfo.put("name", model.getName());
-        metaInfo.put("key", model.getKey());
-        metaInfo.put("description", "");
-        model.setMetaInfo(metaInfo.toString());
-        //保存模型
-        repositoryService.saveModel(model);
-        //保存xml
-        repositoryService.addModelEditorSource(model.getId(), saveModelDTO.getModelXml().getBytes(StandardCharsets.UTF_8));
-        //保存流程图片
-        ByteArrayInputStream inputStream = new ByteArrayInputStream((saveModelDTO.getModelXml().getBytes(StandardCharsets.UTF_8)));
-        InputStreamSource inputStreamSource = new InputStreamSource(inputStream);
-        BpmnModel bpmnModel = new BpmnXMLConverter().convertToBpmnModel(inputStreamSource, true, false, "UTF-8");
-        List<String> highLightedActivities = new ArrayList<>();
-        DefaultProcessDiagramGenerator defaultProcessDiagramGenerator = new DefaultProcessDiagramGenerator();
-        InputStream is = defaultProcessDiagramGenerator.generateDiagram(bpmnModel, "png", highLightedActivities, true);
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        InputStream inputStream = new ByteArrayInputStream(saveModelDTO.getModelXml().getBytes());
+        Model newModel = new Model();
         try {
-            byte[] buff = new byte[1024];
-            while ((is.read(buff)) != -1) {
-                outputStream.write(buff);
+            XMLInputFactory xif = XmlUtil.createSafeXmlInputFactory();
+            InputStreamReader xmlIn = new InputStreamReader(inputStream, "UTF-8");
+            XMLStreamReader xtr = xif.createXMLStreamReader(xmlIn);
+            BpmnModel bpmnModel = bpmnXmlConverter.convertToBpmnModel(xtr);
+            //模板验证
+            ProcessValidator validator = new ProcessValidatorFactory().createDefaultProcessValidator();
+            List<ValidationError> errors = validator.validate(bpmnModel);
+            if (CollectionUtils.isNotEmpty(errors)) {
+                StringBuffer es = new StringBuffer();
+                errors.forEach(ve -> es.append(ve.toString()).append("/n"));
+                //return new ReturnVo(ReturnCode.SUCCESS,"模板验证失败，原因: " + es.toString());
             }
-            byte[] result = outputStream.toByteArray();
-            // 添加图片源
-            repositoryService.addModelEditorSourceExtra(model.getId(), result);
-        } catch (IOException e) {
-            //message = "流程图创建失败！";
+            String fileName = bpmnModel.getMainProcess().getName();
+            if (CollectionUtils.isEmpty(bpmnModel.getProcesses())) {
+                //return new ReturnVo(ReturnCode.SUCCESS,"No process found in definition " + fileName);
+            }
+            if (bpmnModel.getLocationMap().size() == 0) {
+                BpmnAutoLayout bpmnLayout = new BpmnAutoLayout(bpmnModel);
+                bpmnLayout.execute();
+            }
+            ObjectNode modelNode = bpmnJsonConverter.convertToJson(bpmnModel);
+            Process process = bpmnModel.getMainProcess();
+            String name = process.getId();
+            if (StringUtils.isNotEmpty(process.getName())) {
+                name = process.getName();
+            }
+            String description = process.getDocumentation();
+            User createdBy = SecurityUtils.getCurrentUserObject();
+            //查询是否已经存在流程模板
+
+            List<Model> models = modelRepository.findByKeyAndType(process.getId(), AbstractModel.MODEL_TYPE_BPMN);
+            if (CollectionUtils.isNotEmpty(models)) {
+                Model updateModel = models.get(0);
+                newModel.setId(updateModel.getId());
+            }
+            newModel.setName(name);
+            newModel.setKey(process.getId());
+            newModel.setModelType(AbstractModel.MODEL_TYPE_BPMN);
+            newModel.setCreated(Calendar.getInstance().getTime());
+            //newModel.setCreatedBy(createdBy.getId());
+            newModel.setDescription(description);
+            newModel.setModelEditorJson(modelNode.toString());
+            newModel.setLastUpdated(Calendar.getInstance().getTime());
+            //newModel.setLastUpdatedBy(createdBy.getId());
+            modelService.saveModel(newModel);
+            //return returnVo;
+        } catch (BadRequestException e) {
+            throw e;
+        } catch (Exception e) {
             e.printStackTrace();
+            //LOGGER.error("Import failed for {}", e);
+            //returnVo =  new ReturnVo(ReturnCode.SUCCESS,"Import failed for , error message " + e.getMessage());
         }
-        return model;
+        return newModel;
     }
 
     @Transactional(rollbackFor = Exception.class)
     @Override
     public Deployment deploy(String modelId) {
-        Model model = repositoryService.getModel(modelId);
+        Model model = modelService.getModel(modelId);
         //获取模型
         byte[] bytes = repositoryService.getModelEditorSource(modelId);
         if (bytes == null) {
@@ -97,14 +137,13 @@ public class FlowModelServiceImpl implements FlowModelService {
                 .key(model.getKey())
                 .addBpmnModel(model.getName() + ".bpmn20.xml", bpmnModel)
                 .deploy();
-        model.setDeploymentId(deploy.getId());
-        repositoryService.saveModel(model);
         return deploy;
     }
 
     @Override
-    public List<Model> modelList() {
-        List<Model> models = repositoryService.createModelQuery().deployed().list();
-        return models;
+    public List<AbstractModel> modelList() {
+        //modelService.getm
+        //return models;
+        return modelService.getModelsByModelType(AbstractModel.MODEL_TYPE_BPMN);
     }
 }
