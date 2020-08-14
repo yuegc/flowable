@@ -9,7 +9,6 @@ import org.flowable.bpmn.BpmnAutoLayout;
 import org.flowable.bpmn.converter.BpmnXMLConverter;
 import org.flowable.bpmn.model.BpmnModel;
 import org.flowable.bpmn.model.Process;
-import org.flowable.common.engine.impl.util.io.InputStreamSource;
 import org.flowable.editor.language.json.converter.BpmnJsonConverter;
 import org.flowable.editor.language.json.converter.util.CollectionUtils;
 import org.flowable.engine.RepositoryService;
@@ -48,8 +47,6 @@ public class FlowModelServiceImpl implements FlowModelService {
     private ModelRepository modelRepository;
     @Autowired
     private ModelService modelService;
-    @Autowired
-    private ObjectMapper objectMapper;
 
     private BpmnXMLConverter bpmnXmlConverter = new BpmnXMLConverter();
     private BpmnJsonConverter bpmnJsonConverter = new BpmnJsonConverter();
@@ -89,7 +86,6 @@ public class FlowModelServiceImpl implements FlowModelService {
             String description = process.getDocumentation();
             User createdBy = SecurityUtils.getCurrentUserObject();
             //查询是否已经存在流程模板
-
             List<Model> models = modelRepository.findByKeyAndType(process.getId(), AbstractModel.MODEL_TYPE_BPMN);
             if (CollectionUtils.isNotEmpty(models)) {
                 Model updateModel = models.get(0);
@@ -121,23 +117,15 @@ public class FlowModelServiceImpl implements FlowModelService {
     public Deployment deploy(String modelId) {
         Model model = modelService.getModel(modelId);
         //获取模型
-        byte[] bytes = repositoryService.getModelEditorSource(modelId);
-        if (bytes == null) {
-            //模型数据为空，请先设计流程并成功保存，再进行发布
-        }
-        ByteArrayInputStream inputStream = new ByteArrayInputStream(bytes);
-        InputStreamSource inputStreamSource = new InputStreamSource(inputStream);
-        BpmnModel bpmnModel = new BpmnXMLConverter().convertToBpmnModel(inputStreamSource, true, false, "UTF-8");
-        if (bpmnModel.getProcesses().size() == 0) {
-            //数据模型不符要求，请至少设计一条主线流程
-        }
-        //发布流程
-        Deployment deploy = repositoryService.createDeployment()
+        BpmnModel bpmnModel = modelService.getBpmnModel(model);
+        //必须指定文件后缀名否则部署不成功
+        return repositoryService.createDeployment()
                 .name(model.getName())
                 .key(model.getKey())
-                .addBpmnModel(model.getName() + ".bpmn20.xml", bpmnModel)
+                .category(null)
+                .tenantId(null)
+                .addBpmnModel(model.getKey() + ".bpmn", bpmnModel)
                 .deploy();
-        return deploy;
     }
 
     @Override
