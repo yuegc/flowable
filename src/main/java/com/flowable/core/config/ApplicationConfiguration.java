@@ -9,12 +9,7 @@ import org.springframework.context.annotation.FilterType;
 import org.springframework.security.web.firewall.HttpFirewall;
 import org.springframework.security.web.firewall.StrictHttpFirewall;
 
-/**
- * @Description:
- * @Author: Bruce.liu
- * @Since:11:00 2018/9/20
- * 爱拼才会赢 2018 ~ 2030 版权所有
- */
+
 @Configuration
 @EnableConfigurationProperties({FlowableModelerAppProperties.class})
 @ComponentScan(basePackages = {

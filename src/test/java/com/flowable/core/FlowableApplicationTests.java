@@ -51,7 +51,6 @@ class FlowableApplicationTests {
 	@Test
 	void saveModel(){
 		SaveModelDto saveModelDTO = new SaveModelDto();
-		saveModelDTO.setId("6e243355-c73d-11ea-858f-acde48001122");
 		saveModelDTO.setName("测试BPMN模型");
 		saveModelDTO.setKey("test_bpmn");
 		saveModelDTO.setModelXml(bpmxml);
