@@ -8,13 +8,6 @@ spring:
     username: root
     password: Root!@#
     driver-class-name: com.mysql.cj.jdbc.Driver
-#  jpa:
-#    database: mysql
-#    show-sql: true
-#    hibernate:
-#      ddl-auto: update
-#      naming:
-#        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
 flowable:
   #关闭定时任务JOB
   async-executor-activate: false
