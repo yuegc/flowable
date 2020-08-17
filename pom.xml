@@ -82,6 +82,12 @@
             <artifactId>hutool-all</artifactId>
             <version>5.3.9</version>
         </dependency>
+        <!-- pageHelper -->
+        <dependency>
+            <groupId>com.github.pagehelper</groupId>
+            <artifactId>pagehelper</artifactId>
+            <version>5.1.8</version>
+        </dependency>
         <!-- 监控 -->
         <dependency>
             <groupId>org.springframework.boot</groupId>

@@ -1,13 +1,8 @@
-/*
 package com.flowable.core.service.impl;
 
-import cn.hutool.core.bean.BeanUtil;
-import cn.hutool.core.lang.UUID;
-import cn.hutool.core.util.StrUtil;
 import com.flowable.core.dto.SaveFormDto;
-import com.flowable.core.entity.FormModel;
-import com.flowable.core.repository.FormModelDao;
 import com.flowable.core.service.FlowFormService;
+import org.flowable.editor.language.json.converter.util.CollectionUtils;
 import org.flowable.engine.FormService;
 import org.flowable.engine.form.FormProperty;
 import org.flowable.engine.form.TaskFormData;
@@ -16,22 +11,22 @@ import org.flowable.form.api.FormInfo;
 import org.flowable.form.api.FormRepositoryService;
 import org.flowable.form.model.FormField;
 import org.flowable.form.model.SimpleFormModel;
+import org.flowable.ui.modeler.domain.AbstractModel;
+import org.flowable.ui.modeler.domain.Model;
+import org.flowable.ui.modeler.repository.ModelRepository;
+import org.flowable.ui.modeler.serviceapi.ModelService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Calendar;
 import java.util.List;
 
-*/
 /**
  * @author: yuegc
  * @description:
  * @create: 2020/07/15 09:56
- *//*
+ */
 
 @Service
 public class FlowFormServiceImpl implements FlowFormService {
@@ -40,42 +35,49 @@ public class FlowFormServiceImpl implements FlowFormService {
     @Autowired
     private FormService formService;
     @Autowired
-    private FormModelDao formModelDao;
+    private ModelRepository modelRepository;
+    @Autowired
+    private ModelService modelService;
 
     @Transactional(rollbackFor = Exception.class)
     @Override
     public void saveForm(SaveFormDto saveFormDto) {
-        FormModel formModel;
-        if (StrUtil.isBlank(saveFormDto.getId())) {
-            formModel = new FormModel();
-            saveFormDto.setId(UUID.randomUUID().toString());
-        } else {
-            formModel = formModelDao.getFormModelById(saveFormDto.getId());
+        Model newModel = new Model();
+        //查询是否已经存在流程模板
+        List<Model> models = modelRepository.findByKeyAndType(saveFormDto.getKey(), AbstractModel.MODEL_TYPE_FORM);
+        if (CollectionUtils.isNotEmpty(models)) {
+            Model updateModel = models.get(0);
+            newModel.setId(updateModel.getId());
         }
-        BeanUtil.copyProperties(saveFormDto, formModel);
-        formModelDao.save(formModel);
+        newModel.setName(saveFormDto.getName());
+        newModel.setKey(saveFormDto.getKey());
+        newModel.setModelType(AbstractModel.MODEL_TYPE_BPMN);
+        newModel.setCreated(Calendar.getInstance().getTime());
+        //newModel.setCreatedBy(createdBy.getId());
+        newModel.setDescription(saveFormDto.getDescription());
+        newModel.setModelEditorJson(saveFormDto.getFormJson());
+        newModel.setLastUpdated(Calendar.getInstance().getTime());
+        //newModel.setLastUpdatedBy(createdBy.getId());
+        modelService.saveModel(newModel);
     }
 
     @Transactional(rollbackFor = Exception.class)
     @Override
     public FormDeployment deploy(String formId) {
-        FormModel formModel = formModelDao.getFormModelById(formId);
-        if (formModel == null) {
+        Model model = modelService.getModel(formId);
+        if (model == null) {
             //表单数据为空，请先设计表单并成功保存，再进行发布
         }
         FormDeployment deployment = formRepositoryService.createDeployment()
-                .name(formModel.getName())
-                .addString(formModel.getName() + ".form", formModel.getFormJson())
+                .name(model.getName())
+                .addString(model.getName() + ".form", model.getModelEditorJson())
                 .deploy();
-        formModel.setDeploymentId(deployment.getId());
-        formModelDao.save(formModel);
         return deployment;
     }
 
     @Override
-    public Page<FormModel> formList() {
-        Pageable pageable = PageRequest.of(1, 10, Sort.Direction.DESC, "createTime");
-        return formModelDao.findAll(pageable);
+    public List<AbstractModel> formList() {
+        return modelService.getModelsByModelType(AbstractModel.MODEL_TYPE_FORM);
     }
 
     @Override
@@ -92,4 +94,3 @@ public class FlowFormServiceImpl implements FlowFormService {
         return taskFormData.getFormProperties();
     }
 }
-*/

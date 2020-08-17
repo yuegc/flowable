@@ -20,6 +20,10 @@ flowable:
   async-executor-activate: false
   #将databaseSchemaUpdate设置为true。当Flowable发现库与数据库表结构不一致时，会自动将数据库表结构升级至新版本。
   database-schema-update: false
+  #流程字体
+  activityFontName: \u5B8B\u4F53
+  labelFontName: \u5B8B\u4F53
+  annotationFontName: \u5B8B\u4F53
 pagehelper:
   helperDialect: mysql
   reasonable: true
