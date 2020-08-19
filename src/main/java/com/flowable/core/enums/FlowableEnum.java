@@ -10,7 +10,7 @@ import lombok.Getter;
  */
 @Getter
 @AllArgsConstructor
-public enum FlowbleEnum {
+public enum FlowableEnum {
     SUCCESS(1, "");
 
     private final int code;

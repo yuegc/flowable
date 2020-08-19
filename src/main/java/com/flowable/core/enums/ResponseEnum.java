@@ -10,8 +10,11 @@ import lombok.Getter;
  */
 @Getter
 @AllArgsConstructor
-public enum ResponseCodeEnum {
-    SUCCESS(1, "成功");
+public enum ResponseEnum {
+    SUCCESS(1, "成功"),
+    FORM_ABSENT(2, "表单数据为空，请先设计表单并成功保存，再进行发布"),
+    BPMN_ABSENT(3, "流程数据为空，请先设计流程并成功保存，再进行发布"),
+    ;
 
     private final int code;
 

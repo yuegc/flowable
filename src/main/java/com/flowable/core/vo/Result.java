@@ -1,6 +1,6 @@
 package com.flowable.core.vo;
 
-import com.flowable.core.enums.ResponseCodeEnum;
+import com.flowable.core.enums.ResponseEnum;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -29,10 +29,10 @@ public class Result<T> implements Serializable {
     }
 
     public static <T> Result<T> success(T data) {
-        return new Result<>(ResponseCodeEnum.SUCCESS.getCode(), ResponseCodeEnum.SUCCESS.getMsg(), data);
+        return new Result<>(ResponseEnum.SUCCESS.getCode(), ResponseEnum.SUCCESS.getMsg(), data);
     }
 
-    public static <T> Result<T> fail(ResponseCodeEnum responseCodeEnum) {
-        return new Result<>(responseCodeEnum.getCode(), responseCodeEnum.getMsg(), null);
+    public static <T> Result<T> fail(ResponseEnum responseEnum) {
+        return new Result<>(responseEnum.getCode(), responseEnum.getMsg(), null);
     }
 }

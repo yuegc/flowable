@@ -3,6 +3,8 @@ package com.flowable.core.service.impl;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.flowable.core.dto.SaveModelDto;
+import com.flowable.core.enums.ResponseEnum;
+import com.flowable.core.exception.ResponseException;
 import com.flowable.core.service.FlowModelService;
 import com.github.pagehelper.PageHelper;
 import org.apache.commons.lang3.StringUtils;
@@ -118,6 +120,9 @@ public class FlowModelServiceImpl implements FlowModelService {
     @Override
     public Deployment deploy(String modelId) {
         Model model = modelService.getModel(modelId);
+        if (model == null) {
+            throw new ResponseException(ResponseEnum.BPMN_ABSENT);
+        }
         //获取模型
         BpmnModel bpmnModel = modelService.getBpmnModel(model);
         //必须指定文件后缀名否则部署不成功

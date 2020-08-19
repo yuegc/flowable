@@ -1,6 +1,9 @@
 package com.flowable.core.service.impl;
 
 import com.flowable.core.dto.SaveFormDto;
+import com.flowable.core.enums.FlowableEnum;
+import com.flowable.core.enums.ResponseEnum;
+import com.flowable.core.exception.ResponseException;
 import com.flowable.core.service.FlowFormService;
 import org.flowable.editor.language.json.converter.util.CollectionUtils;
 import org.flowable.engine.FormService;
@@ -66,7 +69,7 @@ public class FlowFormServiceImpl implements FlowFormService {
     public FormDeployment deploy(String formId) {
         Model model = modelService.getModel(formId);
         if (model == null) {
-            //表单数据为空，请先设计表单并成功保存，再进行发布
+            throw new ResponseException(ResponseEnum.FORM_ABSENT);
         }
         FormDeployment deployment = formRepositoryService.createDeployment()
                 .name(model.getName())
