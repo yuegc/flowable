@@ -1,23 +1,24 @@
-/*
+
 package com.flowable.core.controller;
 
 import com.flowable.core.dto.SaveFormDto;
-import com.flowable.core.entity.FormModel;
 import com.flowable.core.service.FlowFormService;
 import com.flowable.core.vo.Result;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.flowable.form.api.FormDeployment;
+import org.flowable.ui.modeler.domain.AbstractModel;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
-*/
+import java.util.List;
+
+
 /**
  * @author: yuegc
  * @description:
  * @create: 2020/07/15 09:53
- *//*
+ */
 
 @Api(tags = "表单管理")
 @RestController
@@ -42,9 +43,8 @@ public class FormController {
 
     @ApiOperation("表单模型列表")
     @GetMapping("/form_list")
-    public Result<Page<FormModel>> formList() {
-        Page<FormModel> formModels = flowFormService.formList();
-        return Result.success(formModels);
+    public Result<List<AbstractModel>> formList() {
+        List<AbstractModel> formList = flowFormService.formList();
+        return Result.success(formList);
     }
 }
-*/
