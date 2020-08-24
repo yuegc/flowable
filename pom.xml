@@ -48,6 +48,11 @@
             <artifactId>flowable-ui-modeler-conf</artifactId>
             <version>${flowable.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.flowable</groupId>
+            <artifactId>flowable-ui-modeler-logic</artifactId>
+            <version>${flowable.version}</version>
+        </dependency>
         <!-- mysql -->
         <dependency>
             <groupId>mysql</groupId>
@@ -96,11 +101,11 @@
                 </exclusion>
             </exclusions>
         </dependency>
-        <!-- actuator -->
-        <dependency>
+        <!-- actuator 加入监控后存在spring security校验，这里去除掉-->
+        <!--<dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-actuator</artifactId>
-        </dependency>
+        </dependency>-->
         <!-- swagger -->
         <dependency>
             <groupId>com.github.xiaoymin</groupId>

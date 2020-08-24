@@ -1,15 +1,22 @@
 package com.flowable.core;
 
+import com.flowable.core.config.ApplicationConfiguration;
 import org.flowable.engine.RepositoryService;
 import org.flowable.engine.repository.Deployment;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Import;
 
 import java.util.List;
 
-@SpringBootApplication
+@Import({
+		ApplicationConfiguration.class,
+		//DispatcherServletConfiguration.class
+})
+@SpringBootApplication(exclude = {SecurityAutoConfiguration.class})
 public class FlowableApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(FlowableApplication.class, args);
