@@ -48,11 +48,11 @@
             <artifactId>flowable-ui-modeler-conf</artifactId>
             <version>${flowable.version}</version>
         </dependency>
-        <dependency>
+        <!--<dependency>
             <groupId>org.flowable</groupId>
             <artifactId>flowable-ui-modeler-logic</artifactId>
             <version>${flowable.version}</version>
-        </dependency>
+        </dependency>-->
         <!-- mysql -->
         <dependency>
             <groupId>mysql</groupId>
@@ -89,7 +89,11 @@
             <artifactId>pagehelper</artifactId>
             <version>5.1.8</version>
         </dependency>
-        <!-- 监控 -->
+        <!--log4j-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-log4j2</artifactId>
+        </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
@@ -101,7 +105,7 @@
                 </exclusion>
             </exclusions>
         </dependency>
-        <!-- actuator 加入监控后存在spring security校验，这里去除掉-->
+        <!-- actuator 加入后存在spring security校验，这里去除掉-->
         <!--<dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-actuator</artifactId>
