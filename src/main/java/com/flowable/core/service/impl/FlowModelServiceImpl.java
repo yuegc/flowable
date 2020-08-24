@@ -55,7 +55,6 @@ public class FlowModelServiceImpl implements FlowModelService {
     private BpmnXMLConverter bpmnXmlConverter = new BpmnXMLConverter();
     private BpmnJsonConverter bpmnJsonConverter = new BpmnJsonConverter();
 
-    @Transactional(rollbackFor = Exception.class)
     @Override
     public Model saveModel(SaveModelDto saveModelDTO) {
         InputStream inputStream = new ByteArrayInputStream(saveModelDTO.getModelXml().getBytes());
@@ -116,7 +115,6 @@ public class FlowModelServiceImpl implements FlowModelService {
         return newModel;
     }
 
-    @Transactional(rollbackFor = Exception.class)
     @Override
     public Deployment deploy(String modelId) {
         Model model = modelService.getModel(modelId);

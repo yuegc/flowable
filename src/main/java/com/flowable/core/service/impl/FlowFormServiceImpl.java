@@ -42,7 +42,6 @@ public class FlowFormServiceImpl implements FlowFormService {
     @Autowired
     private ModelService modelService;
 
-    @Transactional(rollbackFor = Exception.class)
     @Override
     public void saveForm(SaveFormDto saveFormDto) {
         Model newModel = new Model();
@@ -64,7 +63,6 @@ public class FlowFormServiceImpl implements FlowFormService {
         modelService.saveModel(newModel);
     }
 
-    @Transactional(rollbackFor = Exception.class)
     @Override
     public FormDeployment deploy(String formId) {
         Model model = modelService.getModel(formId);
